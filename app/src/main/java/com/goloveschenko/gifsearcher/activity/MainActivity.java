@@ -1,35 +1,24 @@
 package com.goloveschenko.gifsearcher.activity;
 
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageView;
+import android.view.View;
 
-import com.bumptech.glide.Glide;
 import com.goloveschenko.gifsearcher.R;
 import com.goloveschenko.gifsearcher.adapter.GifsAdapter;
-import com.goloveschenko.gifsearcher.data.api.GiphyApiClient;
 import com.goloveschenko.gifsearcher.data.entity.Gif;
-import com.goloveschenko.gifsearcher.data.model.Data;
 import com.goloveschenko.gifsearcher.domain.GifListUseCase;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final int COLUMN_COUNT = 2;
@@ -37,7 +26,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private RecyclerView gifsView;
     private SearchView searchView;
     private List<Gif> gifList = new ArrayList<>();
+    private List<Gif> trendingGifList = new ArrayList<>();
     private GifListUseCase gifListUseCase = new GifListUseCase();
+
+    private View.OnClickListener searchListener = view -> {
+        if (getSupportActionBar() != null) {
+            CharSequence title = getSupportActionBar().getTitle() == getResources().getString(R.string.main_page_title) ? "" : getSupportActionBar().getTitle();
+            searchView.setQuery(title, false);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setActionBarTitle(getResources().getString(R.string.main_page_title));
 
         sendQuery(null);
         GifsAdapter gifsAdapter = new GifsAdapter(gifList, this);
@@ -59,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
         searchView = (SearchView) menu.findItem(R.id.menu_toolbar_search).getActionView();
         searchView.setOnQueryTextListener(this);
+        searchView.setOnSearchClickListener(searchListener);
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
         return true;
     }
