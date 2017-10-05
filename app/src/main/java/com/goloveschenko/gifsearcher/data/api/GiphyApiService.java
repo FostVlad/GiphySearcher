@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 
 public interface GiphyApiService {
     @GET("gifs/trending")
-    Observable<Data> getTrending();
+    Observable<Data> getTrending(@Query("offset") int offset);
     @GET("gifs/search")
-    Observable<Data> getSearcher(@Query("q") String query);
+    Observable<Data> getSearching(@Query("q") String query, @Query("rating") String rating, @Query("offset") int offset);
 }
