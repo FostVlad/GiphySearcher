@@ -51,7 +51,7 @@ public class GifsAdapter extends RecyclerView.Adapter<GifsAdapter.ViewHolder> {
         Gif gif = gifList.get(position);
         Glide.with(context)
                 .asGif()
-                .load(gif.getNormalSizeUrl())
+                .load(gif.getSmallSizeUrl())
                 .listener(new RequestListener<GifDrawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {

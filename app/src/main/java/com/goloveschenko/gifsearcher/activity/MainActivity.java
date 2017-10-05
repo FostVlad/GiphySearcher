@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private static final int COLUMN_COUNT = 2;
 
     private RecyclerView gifsView;
+    private SearchView searchView;
     private List<Gif> gifList = new ArrayList<>();
-
     private GifListUseCase gifListUseCase = new GifListUseCase();
 
     @Override
@@ -47,27 +47,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        initFields();
+        sendQuery(null);
         GifsAdapter gifsAdapter = new GifsAdapter(gifList, this);
-
-        gifListUseCase.execute(null, new DisposableObserver<List<Gif>>() {
-            @Override
-            public void onNext(List<Gif> gifs) {
-                gifList.addAll(gifs);
-                gifsView.getAdapter().notifyDataSetChanged();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                failureMessage(e);
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-
         gifsView = (RecyclerView) findViewById(R.id.gifs_view);
         gifsView.setLayoutManager(new GridLayoutManager(this, COLUMN_COUNT));
         gifsView.setAdapter(gifsAdapter);
@@ -76,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_toolbar_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.menu_toolbar_search).getActionView();
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
         return true;
@@ -92,6 +73,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextSubmit(String query) {
         //clear gifs list before searching
         gifList.clear();
+        sendQuery(query);
+        searchView.onActionViewCollapsed();
+        setActionBarTitle(query);
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    private void sendQuery(String query) {
         gifListUseCase.execute(query, new DisposableObserver<List<Gif>>() {
             @Override
             public void onNext(List<Gif> gifs) {
@@ -109,24 +103,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             }
         });
-
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
     }
 
     private void failureMessage(Throwable e) {
         Snackbar.make(gifsView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
-    private void initFields() {
-        ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-        Glide.with(this)
-                .asGif()
-                .load("https://raw.githubusercontent.com/Giphy/GiphyAPI/master/api_giphy_header.gif")
-                .into(imageView);
+    private void setActionBarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 }

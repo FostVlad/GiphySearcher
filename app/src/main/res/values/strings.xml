@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">GifSearcher</string>
+
+    <!--Search menu-->
     <string name="search_title">Search</string>
     <string name="search_hint">Input query</string>
+
+    <!--Navigation menu-->
+    <string name="navigation_rating_y">Rating Y</string>
+    <string name="navigation_rating_g">Rating G</string>
+    <string name="navigation_rating_pg">Rating PG</string>
+    <string name="navigation_show_all">Show All</string>
 </resources>
