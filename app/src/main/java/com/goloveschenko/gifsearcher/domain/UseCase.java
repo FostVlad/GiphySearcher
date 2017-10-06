@@ -19,7 +19,7 @@ public abstract class UseCase<Request, Response> {
     }
 
     public void dispose() {
-        if (!disposable.isDisposed()) {
+        if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
     }
