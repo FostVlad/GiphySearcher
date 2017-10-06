@@ -14,7 +14,6 @@ import com.goloveschenko.gifsearcher.R;
 
 public class GifDialog extends DialogFragment {
     private static final String ARG_KEY = "url";
-    private String url;
 
     public static GifDialog getInstance(String url) {
         GifDialog gifDialog = new GifDialog();
@@ -31,7 +30,7 @@ public class GifDialog extends DialogFragment {
         ImageView imageView = (ImageView) view.findViewById(R.id.dialog_gif_image);
         Glide.with(getActivity())
                 .asGif()
-                .load(url)
+                .load(getArguments().getString(ARG_KEY))
                 .into(imageView);
 
         return new AlertDialog.Builder(getActivity())
