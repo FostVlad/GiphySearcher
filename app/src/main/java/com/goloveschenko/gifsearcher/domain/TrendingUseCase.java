@@ -11,7 +11,7 @@ import io.reactivex.Observable;
 public class TrendingUseCase extends UseCase<TrendingUseCase.Params, List<Gif>> {
     @Override
     protected Observable<List<Gif>> build(Params params) {
-        return GiphyApiClient.getClient().getTrending(params.offset).map(data -> {
+        return GiphyApiClient.getClient().getTrending(params.rating, params.offset).map(data -> {
             List<Gif> gifList = new LinkedList<>();
             int count = data.getPagination().getCount();
             for (int i = 0; i < count; i++) {
@@ -25,14 +25,16 @@ public class TrendingUseCase extends UseCase<TrendingUseCase.Params, List<Gif>> 
     }
 
     public static final class Params {
+        private final String rating;
         private final int offset;
 
-        private Params(int offset) {
+        private Params(String rating, int offset) {
+            this.rating = rating;
             this.offset = offset;
         }
 
-        public static Params getParams(int offset) {
-            return new Params(offset);
+        public static Params getParams(String rating, int offset) {
+            return new Params(rating, offset);
         }
     }
 }

@@ -35,6 +35,7 @@ public class GifDialog extends DialogFragment {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_gif, null);
         dialog.setContentView(view);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         ImageView imageView = (ImageView) view.findViewById(R.id.dialog_gif_image);
         ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.dialog_gif_progress);
         Glide.with(getActivity())
@@ -50,6 +51,7 @@ public class GifDialog extends DialogFragment {
                     @Override
                     public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
+                        getDialog().getWindow().setBackgroundDrawableResource(android.R.color.white);
                         return false;
                     }
                 })

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gif_item_height">150dp</dimen>
+    <dimen name="gif_item_margin">10dp</dimen>
+    <dimen name="dialog_gif_margin">5dp</dimen>
+</resources>

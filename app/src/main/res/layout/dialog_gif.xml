@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/dialog_gif_image"
-        android:layout_margin="5dp"
+        android:layout_margin="@dimen/dialog_gif_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"/>
