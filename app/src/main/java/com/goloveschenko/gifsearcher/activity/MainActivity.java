@@ -50,6 +50,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initToolbars();
+        initGifsView();
+    }
+
+    private void initToolbars() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setActionBarTitle(getResources().getString(R.string.main_page_title));
@@ -57,7 +62,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         navigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigationView.setOnNavigationItemSelectedListener(this);
+    }
 
+    private void initGifsView() {
         loadGifs("", RATING_SHOW_ALL, 0);
         GifsAdapter gifsAdapter = new GifsAdapter(gifList, this);
         gifsView = (RecyclerView) findViewById(R.id.gifs_view);
@@ -70,20 +77,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 isLoading = true;
                 offset = offset + OFFSET_COEFF;
 
-                switch (navigationView.getSelectedItemId()) {
-                    case R.id.action_show_all:
-                        loadGifs(getSearchingQuery(), RATING_SHOW_ALL, offset);
-                        break;
-                    case R.id.action_rating_y:
-                        loadGifs(getSearchingQuery(), RATING_Y, offset);
-                        break;
-                    case R.id.action_rating_g:
-                        loadGifs(getSearchingQuery(), RATING_G, offset);
-                        break;
-                    case R.id.action_rating_pg:
-                        loadGifs(getSearchingQuery(), RATING_PG, offset);
-                        break;
-                }
+                loadGifs(getSearchingQuery(), navigationView.getSelectedItemId(), offset);
             }
 
             @Override
@@ -112,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             @Override
             public boolean onQueryTextSubmit(String query) {
                 loadGifs(query, RATING_SHOW_ALL, 0);
-//                searchView.onActionViewCollapsed();
                 invalidateOptionsMenu();
                 setBackButtonVisible(true);
                 setActionBarTitle(query);
@@ -151,25 +144,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_show_all:
-                loadGifs(getSearchingQuery(), RATING_SHOW_ALL, 0);
-                break;
-            case R.id.action_rating_y:
-                loadGifs(getSearchingQuery(), RATING_Y, 0);
-                break;
-            case R.id.action_rating_g:
-                loadGifs(getSearchingQuery(), RATING_G, 0);
-                break;
-            case R.id.action_rating_pg:
-                loadGifs(getSearchingQuery(), RATING_PG, 0);
-                break;
-        }
+        loadGifs(getSearchingQuery(), item.getItemId(), 0);
         return true;
     }
 
     /**
-     * if query is empty then load trending gifs, else load searching gifs
+     * If query is empty then load trending gifs, else load searching gifs
      */
     private void loadGifs(String query, String rating, int offset) {
         if (offset == 0) {
@@ -198,6 +178,26 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             searchingUseCase.execute(SearchingUseCase.Params.getParams(query, rating, offset), observer);
         } else {
             trendingUseCase.execute(TrendingUseCase.Params.getParams(rating, offset), observer);
+        }
+    }
+
+    /**
+     * Load gifs for selected tab with rating
+     */
+    private void loadGifs(String query, int menuItemId, int offset) {
+        switch (menuItemId) {
+            case R.id.action_show_all:
+                loadGifs(query, RATING_SHOW_ALL, offset);
+                break;
+            case R.id.action_rating_y:
+                loadGifs(query, RATING_Y, offset);
+                break;
+            case R.id.action_rating_g:
+                loadGifs(query, RATING_G, offset);
+                break;
+            case R.id.action_rating_pg:
+                loadGifs(query, RATING_PG, offset);
+                break;
         }
     }
 
